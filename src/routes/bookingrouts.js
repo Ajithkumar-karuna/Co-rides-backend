@@ -2,26 +2,6 @@ const express = require("express");
 const app = express.Router();
 const db = require("../db/db");
 
-
-
-app.post('/trans_booking', (req, res) => {
-  const booking = req.body;
-
-
-  booking.from_Place = JSON.stringify(booking.from_Place);
-  booking.to_Place = JSON.stringify(booking.to_Place);
-
-
-  db.query('INSERT INTO trans_booking SET ?', booking, (error, results) => {
-    if (error) {
-      console.error('Error inserting booking data:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    } else {
-      res.json({ message: 'Booking created successfully' });
-    }
-  });
-});
-
 app.put("/trans_boooking/:bookingId/", (req, res) => {
   const bookingId = req.params.bookingId;
   const { Payment_status } = req.body;
@@ -41,6 +21,62 @@ app.put("/trans_boooking/:bookingId/", (req, res) => {
         res.status(404).json({ error: "Booking not found" });
       } else {
         res.json({ message: "Payment status updated successfully" });
+      }
+    }
+  );
+});
+
+app.post('/trans_booking/:user_id', (req, res) => {
+  const user_id = req.params.user_id; // Use user_id instead of bookingId
+  const {
+    booking_date,
+    from_latitude,
+    from_longitude,
+    from_Place,
+    to_latitude,
+    to_longitude,
+    to_Place,
+    km_distance,
+    is_conform,
+    driver_id,
+    Amount,
+    Coupon_amount,
+    total_amount,
+    Payment_status,
+    booking_status,
+    vehicle_Id
+  } = req.body;
+
+  const fromPlaceString = typeof from_Place === 'object' ? JSON.stringify(from_Place) : from_Place;
+  const toPlaceString = typeof to_Place === 'object' ? JSON.stringify(to_Place) : to_Place;
+
+  db.query(
+    'INSERT INTO trans_booking (booking_date, user_id, from_latitude, from_longitude, from_Place, to_latitude, to_longitude, to_Place, km_distance, is_conform, driver_id, Amount, Coupon_amount, total_amount, Payment_status, booking_status, vehicle_Id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [
+      booking_date,
+      user_id, // Use user_id instead of bookingId
+      from_latitude,
+      from_longitude,
+      fromPlaceString,
+      to_latitude,
+      to_longitude,
+      toPlaceString,
+      km_distance,
+      is_conform,
+      driver_id,
+      Amount,
+      Coupon_amount,
+      total_amount,
+      Payment_status,
+      booking_status,
+      vehicle_Id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.status(201).json({ message: 'Booking created successfully', bookingId: results.insertId });
       }
     }
   );

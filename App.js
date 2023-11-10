@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const signRoutes = require('./src/routes/create_user');
 const updateuser= require('./src/routes/createuser_update');
 const bookingRouts= require('./src/routes/bookingrouts');
+const GetAlluser=require('./src/routes/getAll')
 
 const app = express();
 
@@ -14,7 +15,7 @@ app.use(bodyParser.json());
 // app.use(fileUpload());
 // app.use(express.static('public'));
 app.use(express.json());
-app.use('/api', signRoutes,updateuser);
+app.use('/api', signRoutes,updateuser,GetAlluser);
 app.use('/api',bookingRouts)
 
 const db = require('./src/db/db'); 
