@@ -27,7 +27,7 @@ app.put("/trans_boooking/:bookingId/", (req, res) => {
 });
 
 app.post('/trans_booking/:user_id', (req, res) => {
-  const user_id = req.params.user_id; // Use user_id instead of bookingId
+  const user_id = req.params.user_id; 
   const {
     booking_date,
     from_latitude,

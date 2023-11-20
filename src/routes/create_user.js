@@ -366,3 +366,4 @@ app.get('/addresstypes/:user_id', (req, res) => {
   });
  });
 module.exports = app;
+
